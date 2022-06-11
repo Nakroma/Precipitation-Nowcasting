@@ -13,8 +13,8 @@ encoder_forecaster2 = copy.deepcopy(encoder_forecaster1)
 
 encoder_forecaster1 = encoder_forecaster1.to(cfg.GLOBAL.DEVICE)
 encoder_forecaster2 = encoder_forecaster2.to(cfg.GLOBAL.DEVICE)
-encoder_forecaster1.load_state_dict(torch.load(cfg.GLOBAL.MODEL_SAVE_DIR +  '/trajGRU_from_scratch/models/encoder_forecaster_77000.pth'))
-encoder_forecaster2.load_state_dict(torch.load(cfg.GLOBAL.MODEL_SAVE_DIR + '/trajGRU_finetune/models/encoder_forecaster_80000.pth'))
+encoder_forecaster1.load_state_dict(torch.load(cfg.GLOBAL.MODEL_SAVE_DIR +  '/trajGRU_from_scratch/models/encoder_forecaster_88000.pth'))
+encoder_forecaster2.load_state_dict(torch.load(cfg.GLOBAL.MODEL_SAVE_DIR + '/trajGRU_finetune/models/encoder_forecaster_89000.pth'))
 
 models = OrderedDict({
     'trajGRU_from_scratch': encoder_forecaster1,
