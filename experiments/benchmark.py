@@ -29,8 +29,7 @@ with torch.no_grad():
         if is_deeplearning_model:
             model.eval()
         evaluator = HKOEvaluation(seq_len=OUT_LEN, use_central=False)
-        hko_iter = HKOIterator(pd_path=cfg.HKO_PD.RAINY_TEST,
-        # hko_iter = HKOIterator(pd_path=cfg.HKO_PD.RAINY_VALID,
+        hko_iter = HKOIterator(pd_path=cfg.HKO_PD.RAINY_VALID,
                                      sample_mode="sequent",
                                      seq_len=IN_LEN + OUT_LEN,
                                      stride=cfg.HKO.BENCHMARK.STRIDE)
