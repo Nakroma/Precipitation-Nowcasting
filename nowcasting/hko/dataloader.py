@@ -9,6 +9,7 @@ import math
 import json
 import os
 import pickle
+import cv2
 
 def encode_month(month):
     """Encode the month into a vector
@@ -186,7 +187,7 @@ class HKOIterator(object):
     """
     def __init__(self, pd_path, sample_mode, seq_len=30,
                  max_consecutive_missing=2, begin_ind=None, end_ind=None,
-                 stride=None, width=None, height=None, base_freq='6min'):
+                 stride=None, width=None, height=None, base_freq='5min'):
         """Random sample: sample a random clip that will not violate the max_missing frame_num criteria
         Sequent sample: sample a clip from the beginning of the time.
                         Everytime, the clips from {T_begin, T_begin + 6min, ..., T_begin + (seq_len-1) * 6min} will be used
@@ -216,7 +217,8 @@ class HKOIterator(object):
             width = cfg.HKO.ITERATOR.WIDTH
         if height is None:
             height = cfg.HKO.ITERATOR.HEIGHT
-        self._df = pd.read_pickle(path=pd_path)
+        print(pd_path)
+        self._df = pd.read_pickle(pd_path)
         self.set_begin_end(begin_ind=begin_ind, end_ind=end_ind)
         self._df_index_set = frozenset([self._df.index[i] for i in range(self._df.size)])
         self._exclude_mask = get_exclude_mask()
@@ -390,7 +392,7 @@ class HKOIterator(object):
 
     def sample(self, batch_size, only_return_datetime=False):
         """Sample a minibatch from the hko7 dataset based on the given type and pd_file
-        
+
         Parameters
         ----------
         batch_size : int

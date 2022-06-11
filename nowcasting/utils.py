@@ -119,6 +119,13 @@ def rainfall_to_pixel(rainfall_intensity, a=58.53, b=1.56):
     pixel_vals = (dBZ + 10.0) / 70.0
     return pixel_vals
 
+def rainfall_to_rgb(rainfall_intensity):
+    dBZ = rainfall_to_dBZ(rainfall_intensity)
+    print(rainfall_intensity)
+    print(dBZ)
+    pixel_vals = np.ceil(255 * (rainfall_to_pixel(rainfall_intensity) + 0.5))
+    return np.clip(pixel_vals, 0, 255)
+
 def dBZ_to_rainfall(dBZ, a=58.53, b=1.56):
     return np.power(10, (dBZ - 10 * np.log10(a))/(10*b))
 

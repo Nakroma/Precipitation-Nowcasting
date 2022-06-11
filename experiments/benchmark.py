@@ -1,58 +1,30 @@
 import sys
 sys.path.insert(0, '..')
-from nowcasting.hko.dataloader import HKOIterator
-from nowcasting.config import cfg
-import torch
-from nowcasting.config import cfg
-from nowcasting.models.forecaster import Forecaster
-from nowcasting.models.encoder import Encoder
-from collections import OrderedDict
-from nowcasting.models.model import EF
-from torch.optim import lr_scheduler
-from nowcasting.models.loss import Weighted_mse_mae
-from nowcasting.models.trajGRU import TrajGRU
-from nowcasting.train_and_test import train_and_test
-import numpy as np
-from nowcasting.hko.evaluation import *
 import copy
 from experiments.net_params import *
-from nowcasting.models.model import Predictor
-from experiments.rover_and_last_frame import LastFrame, Rover
 import time
 import pickle
-
+import os
 
 encoder = Encoder(encoder_params[0], encoder_params[1]).to(cfg.GLOBAL.DEVICE)
 forecaster = Forecaster(forecaster_params[0], forecaster_params[1])
 encoder_forecaster1 = EF(encoder, forecaster)
 encoder_forecaster2 = copy.deepcopy(encoder_forecaster1)
-conv2d_network = Predictor(conv2d_params).to(cfg.GLOBAL.DEVICE)
 
 encoder_forecaster1 = encoder_forecaster1.to(cfg.GLOBAL.DEVICE)
 encoder_forecaster2 = encoder_forecaster2.to(cfg.GLOBAL.DEVICE)
-encoder_forecaster1.load_state_dict(torch.load('/home/hzzone/save/trajGRU_balanced_mse_mae/models/encoder_forecaster_77000.pth'))
-encoder_forecaster2.load_state_dict(torch.load('/home/hzzone/save/trajGRU_frame_weighted_mse/models/encoder_forecaster_45000.pth'))
-conv2d_network.load_state_dict(torch.load('/home/hzzone/save/conv2d/models/encoder_forecaster_60000.pth'))
-
-convlstm_encoder = Encoder(convlstm_encoder_params[0], convlstm_encoder_params[1]).to(cfg.GLOBAL.DEVICE)
-
-convlstm_forecaster = Forecaster(convlstm_forecaster_params[0], convlstm_forecaster_params[1]).to(cfg.GLOBAL.DEVICE)
-
-convlstm_encoder_forecaster = EF(convlstm_encoder, convlstm_forecaster).to(cfg.GLOBAL.DEVICE)
-convlstm_encoder_forecaster.load_state_dict(torch.load('/home/hzzone/save/convLSTM_balacned_mse_mae/models/encoder_forecaster_64000.pth'))
+encoder_forecaster1.load_state_dict(torch.load(cfg.GLOBAL.MODEL_SAVE_DIR +  '/trajGRU_from_scratch/models/encoder_forecaster_77000.pth'))
+encoder_forecaster2.load_state_dict(torch.load(cfg.GLOBAL.MODEL_SAVE_DIR + '/trajGRU_finetune/models/encoder_forecaster_80000.pth'))
 
 models = OrderedDict({
-    'convLSTM_balacned_mse_mae': convlstm_encoder_forecaster,
-    'conv2d': conv2d_network,
-    'trajGRU_balanced_mse_mae': encoder_forecaster1,
-    'trajGRU_frame_weighted_mse': encoder_forecaster2,
-    'last_frame': LastFrame,
-    'rover_nonlinear': Rover()
+    'trajGRU_from_scratch': encoder_forecaster1,
+    'trajGRU_finetune': encoder_forecaster2,
 })
 
 model_run_avarage_time = dict()
 with torch.no_grad():
     for name, model in models.items():
+        print(name)
         is_deeplearning_model = (torch.nn.Module in model.__class__.__bases__)
         if is_deeplearning_model:
             model.eval()
@@ -76,6 +48,7 @@ with torch.no_grad():
             valid_data = valid_batch[:IN_LEN, ...]
             valid_label = valid_batch[IN_LEN:IN_LEN + OUT_LEN, ...]
             mask = valid_mask[IN_LEN:IN_LEN + OUT_LEN, ...].astype(int)
+            mask.fill(1)
 
             if is_deeplearning_model:
                 valid_data = torch.from_numpy(valid_data).to(cfg.GLOBAL.DEVICE)

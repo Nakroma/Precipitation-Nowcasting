@@ -1,3 +1,15 @@
+## Deep Learning approach towards Precipitation Nowcasting
+Here you can find the source code used for the paper "Deep Learning Approach Towards Precipitation Nowcasting:
+Evaluating Regional Extrapolation Capabilities". You can find the readme of the original pytorch implementation repository below.
+All code was run using CUDA 11.3 with PyTorch 1.10.0 on Python 3.5.8.
+
+`/experiments/trajGRU_from_scratch/main.py` and `/experiments/trajGRU_finetune/main.py` is the code used to train/finetune the compared the model trained from scratch and the model that was finetuned on pretrained weights.
+The benchmark results are computed by `/experiments/benchmark.py`. The config for the data paths etc. is found in `/nowcasting/config.py`.
+
+
+---
+## TrajGRU PyTorch Implementation
+
 ### Introduction
 This repo has implemented a pytorch-based encoder-forecaster model with RNNs including (TrajGRU, ConvLSTM) to do precipitation nowcasting. For more information about TrajGRU, please refer to [HKO-7](https://github.com/sxjscience/HKO-7).
 

@@ -89,7 +89,7 @@ def cv2_read_img_resize(path, read_storage, resize_storage, frame_size, grayscal
 
 
 def cv2_read_img(path, read_storage, grayscale):
-    if grayscale:
+    if grayscale: 
         read_storage[:] = cv2.imread(path, 0)
     else:
         read_storage[:] = cv2.imread(path)
@@ -111,7 +111,63 @@ def quick_read_frames(path_list, im_w=None, im_h=None, resize=False, frame_size=
     img_num = len(path_list)
     for i in range(img_num):
         if not os.path.exists(path_list[i]):
-            raise IOError
+            real_old = path_list[i]
+            rold_split = real_old.split(".")[0].split("\RAD")
+            mark_hour = int(rold_split[1][6:8])
+            for iter in range(288):
+                old = path_list[i]
+                dot_split = old.split(".")
+                rad_split = dot_split[0].split("\RAD")
+
+                hour = int(rad_split[1][6:8])
+                minute = int(rad_split[1][8:10])
+
+                if mark_hour >= 12:
+                    minute = minute - 5
+                else:
+                    minute = minute + 5
+
+                if minute < 0:
+                    hour = hour - 1
+                    minute = 55
+                if minute > 55:
+                    hour = hour + 1
+                    minute = 0
+                
+                val = rad_split[1][0:6] +  str(hour).zfill(2) + str(minute).zfill(2) + "00"
+                path_list[i] = rad_split[0] + "\RAD" + val + "." + dot_split[1]
+                if os.path.exists(path_list[i]):
+                    break
+            if not os.path.exists(path_list[i]):
+                path_list[i] = real_old
+                for iter in range(288):
+                    old = path_list[i]
+                    dot_split = old.split(".")
+                    rad_split = dot_split[0].split("\RAD")
+
+                    hour = int(rad_split[1][6:8])
+                    minute = int(rad_split[1][8:10])
+
+                    if mark_hour < 12:
+                        minute = minute - 5
+                    else:
+                        minute = minute + 5
+
+                    if minute < 0:
+                        hour = hour - 1
+                        minute = 55
+                    if minute > 55:
+                        hour = hour + 1
+                        minute = 0
+                    
+                    val = rad_split[1][0:6] +  str(hour).zfill(2) + str(minute).zfill(2) + "00"
+                    path_list[i] = rad_split[0] + "\RAD" + val + "." + dot_split[1]
+                    if os.path.exists(path_list[i]):
+                        break
+                if not os.path.exists(path_list[i]):
+                    print(real_old)
+                    print(path_list[i])
+                    raise IOError
     if im_w is None or im_h is None:
         im_w, im_h = quick_imsize(path_list[0])
     if grayscale:

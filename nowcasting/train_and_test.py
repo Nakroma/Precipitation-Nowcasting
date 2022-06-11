@@ -48,13 +48,16 @@ def train_and_test(encoder_forecaster, optimizer, criterion, lr_scheduler, batch
     writer = SummaryWriter(log_dir)
 
     for itera in tqdm(range(1, max_iterations+1)):
-        lr_scheduler.step()
         train_batch, train_mask, sample_datetimes, _ = \
             train_hko_iter.sample(batch_size=batch_size)
         train_batch = torch.from_numpy(train_batch.astype(np.float32)).to(cfg.GLOBAL.DEVICE) / 255.0
         train_data = train_batch[:IN_LEN, ...]
         train_label = train_batch[IN_LEN:IN_LEN + OUT_LEN, ...]
-        mask = torch.from_numpy(train_mask[IN_LEN:IN_LEN + OUT_LEN, ...].astype(int)).to(cfg.GLOBAL.DEVICE)
+
+        # RADOLAN doesn't have masks so we just create one with 1's everywhere
+        filled_mask = train_mask[IN_LEN:IN_LEN + OUT_LEN, ...].astype(int)
+        filled_mask.fill(1)
+        mask = torch.from_numpy(filled_mask).to(cfg.GLOBAL.DEVICE)
 
         encoder_forecaster.train()
         optimizer.zero_grad()
@@ -63,6 +66,7 @@ def train_and_test(encoder_forecaster, optimizer, criterion, lr_scheduler, batch
         loss.backward()
         torch.nn.utils.clip_grad_value_(encoder_forecaster.parameters(), clip_value=50.0)
         optimizer.step()
+        lr_scheduler.step()
         train_loss += loss.item()
 
 
