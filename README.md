@@ -1,4 +1,7 @@
 ## Deep Learning approach towards Precipitation Nowcasting
+
+[![DOI](https://zenodo.org/badge/502338662.svg)](https://zenodo.org/badge/latestdoi/502338662)
+
 Here you can find the source code used for the paper "Deep Learning Approach Towards Precipitation Nowcasting:
 Evaluating Regional Extrapolation Capabilities". You can find the readme of the original pytorch implementation repository by [Zhizhong Huang](https://hzzone.github.io/) below.
 All code was run using CUDA 11.3 with PyTorch 1.10.0 on Python 3.6.8.
