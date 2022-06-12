@@ -3,9 +3,28 @@ Here you can find the source code used for the paper "Deep Learning Approach Tow
 Evaluating Regional Extrapolation Capabilities". You can find the readme of the original pytorch implementation repository by [Zhizhong Huang](https://hzzone.github.io/) below.
 All code was run using CUDA 11.3 with PyTorch 1.10.0 on Python 3.6.8.
 
-`/experiments/trajGRU_from_scratch/main.py` and `/experiments/trajGRU_finetune/main.py` is the code used to train/finetune the compared the model trained from scratch and the model that was finetuned on pretrained weights.
-The benchmark results are computed by `/experiments/benchmark.py`. The config for the data paths etc. is found in `/nowcasting/config.py`.
+### Configuration
+You can find the configuration at `/nowcasting/config.py`. To be able to run the following scripts you may need to adjust
+the used data paths.
 
+### Preprocessing
+The input radar png images are available at [zenodo doi] and the corresponding pkl information files used by the models in `/hko_data`.
+
+You can find the preprocessing scripts used to generate those files from the raw RADOLAN RX composite in the `/preprocessing` folder.
+
+`generate_rx_plots.py` is used to generate the radar png images.  
+`generate_rx_pkls.py` is used to generate the pkl information files. The radar png images need to exist to be able to run this.
+
+
+### Training
+The code that was used for training the model from scratch and finetuning the pretrained model can be found in
+`/experiments/trajGRU_from_scratch/main.py` and `/experiments/trajGRU_finetune/main.py`
+
+### Benchmark
+The script to run the benchmarks can be found under `experiments/benchmark.py`.
+
+To run the benchmarks for the finished models their weights need to be placed in the model save directory.
+The ones used in the paper are available under [zenodo doi].
 
 ---
 ## TrajGRU PyTorch Implementation
