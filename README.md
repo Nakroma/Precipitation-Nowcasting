@@ -8,7 +8,7 @@ You can find the configuration at `/nowcasting/config.py`. To be able to run the
 the used data paths.
 
 ### Preprocessing
-The input radar png images are available at [zenodo doi] and the corresponding pkl information files used by the models in `/hko_data`.
+The input radar png images are available at https://doi.org/10.5281/zenodo.6634851 and the corresponding pkl information files used by the models in `/hko_data`.
 
 You can find the preprocessing scripts used to generate those files from the raw RADOLAN RX composite in the `/preprocessing` folder.
 
@@ -24,7 +24,7 @@ The code that was used for training the model from scratch and finetuning the pr
 The script to run the benchmarks can be found under `experiments/benchmark.py`.
 
 To run the benchmarks for the finished models their weights need to be placed in the model save directory.
-The ones used in the paper are available under [zenodo doi].
+The ones used in the paper are available under https://doi.org/10.5281/zenodo.6634844
 
 ---
 ## TrajGRU PyTorch Implementation
